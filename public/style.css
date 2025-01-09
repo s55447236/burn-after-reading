@@ -39,6 +39,10 @@ h1 {
     font-weight: 700;
     line-height: 1.4;
     transition: all 0.3s ease-out;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .features {

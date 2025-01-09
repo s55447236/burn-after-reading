@@ -204,10 +204,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // 鼠标离开时恢复原状
         option.addEventListener('mouseleave', () => {
             console.log('鼠标离开，恢复原状');
+            titleElement.innerHTML = '你的秘密<br>只属于你信任的人';
             titleElement.className = '';
-            titleElement.style.opacity = '1';
-            titleElement.style.transform = 'none';
-            titleElement.style.filter = 'none';
+            titleElement.style.cssText = '';
         });
         
         // 点击整个选项时选中单选框
@@ -238,10 +237,53 @@ function applyEffect(element, effect) {
             element.style.filter = 'blur(3px)';
             break;
         case 'evaporate':
-            element.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
-            element.style.transform = 'translateY(-150px) rotate(10deg) skew(-15deg, 15deg) scale(0.9)';
-            element.style.opacity = '0';
-            element.style.filter = 'blur(8px)';
+            // 保存原始文本和结构
+            const originalHTML = element.innerHTML;
+            
+            // 将文本拆分成行
+            const lines = element.innerText.split('\n');
+            element.innerHTML = '';
+            
+            // 为每行创建一个容器
+            lines.forEach((line, lineIndex) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.style.position = 'relative';
+                lineDiv.style.lineHeight = '1.2';
+                lineDiv.style.fontSize = '1em';
+                lineDiv.style.fontWeight = '700';
+                lineDiv.style.fontFamily = "'Noto Serif SC', serif";
+                lineDiv.style.marginBottom = lineIndex < lines.length - 1 ? '10px' : '0';
+                
+                // 将每行文本拆分成单个字符
+                line.split('').forEach((char, charIndex) => {
+                    const span = document.createElement('span');
+                    span.innerText = char;
+                    span.style.display = 'inline-block';
+                    span.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
+                    span.style.transform = 'translateY(0) rotate(0deg) skew(0deg, 0deg)';
+                    lineDiv.appendChild(span);
+                    
+                    // 延迟一帧应用动画
+                    requestAnimationFrame(() => {
+                        const rotate = -15 + Math.random() * 30;
+                        const skewX = -20 + Math.random() * 40;
+                        const skewY = -20 + Math.random() * 40;
+                        span.style.transform = `translateY(-150px) rotate(${rotate}deg) skew(${skewX}deg, ${skewY}deg)`;
+                        span.style.opacity = '0';
+                        span.style.filter = 'blur(8px)';
+                    });
+                });
+                
+                element.appendChild(lineDiv);
+            });
+            
+            // 动画结束后恢复原始文本和结构
+            setTimeout(() => {
+                element.innerHTML = originalHTML;
+                element.style.opacity = '1';
+                element.style.transform = 'none';
+                element.style.filter = 'none';
+            }, 1000);
             break;
     }
 }
@@ -267,10 +309,39 @@ function applyDestroyEffect(messageElement, effect) {
             messageElement.style.filter = 'blur(10px)';
             break;
         case 'evaporate':
-            messageElement.style.transition = 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
-            messageElement.style.transform = 'translateY(-300px) rotate(20deg) skew(-20deg, 20deg) scale(0.8)';
-            messageElement.style.opacity = '0';
-            messageElement.style.filter = 'blur(12px)';
+            // 将文本拆分成行
+            const lines = messageElement.innerText.split('\n');
+            messageElement.innerHTML = '';
+            
+            // 为每行创建一个容器
+            lines.forEach((line, lineIndex) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.style.position = 'relative';
+                lineDiv.style.marginBottom = lineIndex < lines.length - 1 ? '10px' : '0';
+                
+                // 将每行文本拆分成单个字符
+                line.split('').forEach((char, charIndex) => {
+                    const span = document.createElement('span');
+                    span.innerText = char;
+                    span.style.display = 'inline-block';
+                    span.style.transition = 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    // 为每个字符生成随机的旋转和倾斜角度
+                    const rotate = -25 + Math.random() * 50;
+                    const skewX = -30 + Math.random() * 80;
+                    const skewY = -30 + Math.random() * 60;
+                    span.style.transform = 'translateY(0) rotate(0deg) skew(0deg, 0deg)';
+                    lineDiv.appendChild(span);
+                    
+                    // 延迟一帧应用动画
+                    requestAnimationFrame(() => {
+                        span.style.transform = `translateY(-300px) rotate(${rotate}deg) skew(${skewX}deg, ${skewY}deg)`;
+                        span.style.opacity = '0';
+                        span.style.filter = 'blur(12px)';
+                    });
+                });
+                
+                messageElement.appendChild(lineDiv);
+            });
             break;
     }
 } 
