@@ -3,29 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>阅后即焚消息</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>阅后即焚</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <div id="messageInput" class="section">
-            <textarea placeholder="输入你想说的话..." id="inputText"></textarea>
-            <button onclick="generateLink()">生成链接</button>
+        <h1>你的秘密<br>只属于你信任的人</h1>
+        <p class="subtitle">任何私密信息都能安全传递，阅读后即时销毁，无痕保存，让每次分享都安心无忧。</p>
+        
+        <div class="features">
+            <span class="feature">隐私安全</span>
+            <span class="feature">即时销毁</span>
+            <span class="feature">无痕分享</span>
         </div>
         
-        <div id="shareLink" class="section" style="display: none;">
-            <p>分享以下链接：</p>
+        <!-- 消息输入界面 -->
+        <div id="messageInput">
+            <textarea id="inputText" placeholder="写下你想说的话，绝对保密哦...."></textarea>
+            
+            <div class="effect-options">
+                <div class="effect-option">
+                    <input type="radio" name="destroyEffect" value="explosion" checked>
+                    <span>炫酷爆炸</span>
+                </div>
+                <div class="effect-option">
+                    <input type="radio" name="destroyEffect" value="dissolve">
+                    <span>平滑溶解</span>
+                </div>
+                <div class="effect-option">
+                    <input type="radio" name="destroyEffect" value="evaporate">
+                    <span>蒸发消失</span>
+                </div>
+            </div>
+            
+            <button onclick="generateLink()">生成分享链接</button>
+        </div>
+        
+        <!-- 链接分享界面 -->
+        <div id="shareLink" style="display: none;">
             <div class="link-container">
                 <input type="text" id="linkText" readonly>
-                <button onclick="copyLink()">复制链接</button>
             </div>
+            <button onclick="copyLink()">复制链接</button>
+            <button onclick="window.location.reload()" style="margin-top: 10px; background-color: #f5f5f5; color: #333;">重新生成</button>
         </div>
-
-        <div id="messageDisplay" class="section" style="display: none;">
+        
+        <!-- 消息显示界面 -->
+        <div id="messageDisplay" style="display: none;">
             <div id="message"></div>
             <div id="countdown"></div>
         </div>
     </div>
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html> 

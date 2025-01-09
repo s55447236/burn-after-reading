@@ -26,14 +26,18 @@ setInterval(() => {
     }
 }, 60000);
 
+// 服务静态文件 - 修改为正确的配置
+app.use(express.static(path.join(__dirname, 'public')));
+
 // API 路由
 app.post('/api/messages', (req, res) => {
     console.log('收到新消息请求:', req.body);
-    const { message } = req.body;
+    const { message, effect } = req.body;
     const id = Math.random().toString(36).substr(2, 8);
     
     messages.set(id, {
         content: message,
+        effect: effect,
         createdAt: Date.now()
     });
 
@@ -53,12 +57,11 @@ app.get('/api/messages', (req, res) => {
 
     console.log('返回消息:', id, message);
     messages.delete(id);
-    res.json({ content: message.content });
+    res.json({ 
+        content: message.content,
+        effect: message.effect
+    });
 });
-
-// 服务静态文件
-app.use('/style.css', express.static(path.join(__dirname, 'public', 'style.css')));
-app.use('/script.js', express.static(path.join(__dirname, 'public', 'script.js')));
 
 // 处理所有其他路由，包括根路由和 /view/* 路由
 app.get('*', (req, res) => {

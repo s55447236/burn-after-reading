@@ -7,7 +7,7 @@ async function generateLink() {
     }
     
     try {
-        // 使用完整的 API URL
+        const effect = getSelectedEffect();
         const baseUrl = window.location.hostname === 'localhost' || 
                        window.location.hostname === '127.0.0.1' ||
                        window.location.hostname === '192.168.1.50'
@@ -19,7 +19,10 @@ async function generateLink() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ message })
+            body: JSON.stringify({ 
+                message,
+                effect 
+            })
         });
         
         if (!response.ok) {
@@ -46,7 +49,6 @@ window.onload = async function() {
     if (match) {
         const id = match[1];
         try {
-            // 使用完整的 API URL
             const baseUrl = window.location.hostname === 'localhost' || 
                           window.location.hostname === '127.0.0.1' ||
                           window.location.hostname === '192.168.1.50'
@@ -83,16 +85,15 @@ window.onload = async function() {
                     countdownElement.innerText = `${timeLeft} 秒后消息将被销毁`;
                 } else {
                     clearInterval(countdown);
-                    
-                    // 显示销毁动画
-                    createExplosion();
-                    messageElement.classList.add('exploding');
                     countdownElement.style.display = 'none';
                     
-                    // 等待动画完成（1秒）后显示销毁信息
+                    // 应用销毁效果
+                    applyDestroyEffect(messageElement, data.effect || 'explosion');
+                    
+                    // 等待动画完成后显示销毁信息
                     setTimeout(() => {
                         messageElement.innerText = '消息已被销毁';
-                        messageElement.classList.remove('exploding');
+                        messageElement.className = ''; // 移除所有动画类
                         
                         // 显示销毁信息 1 秒后返回输入界面
                         setTimeout(() => {
@@ -155,5 +156,54 @@ function createExplosion() {
             duration: 1000,
             easing: 'ease-out'
         }).onfinish = () => particle.remove();
+    }
+}
+
+// 初始化效果选择器
+document.addEventListener('DOMContentLoaded', function() {
+    const effectOptions = document.querySelectorAll('.effect-option');
+    effectOptions.forEach(option => {
+        const radio = option.querySelector('input[type="radio"]');
+        
+        // 初始化选中状态
+        if (radio.checked) {
+            option.classList.add('selected');
+        }
+        
+        // 点击整个选项时选中单选框
+        option.addEventListener('click', () => {
+            // 移除其他选项的选中状态
+            effectOptions.forEach(opt => opt.classList.remove('selected'));
+            // 选中当前选项
+            option.classList.add('selected');
+            radio.checked = true;
+        });
+    });
+});
+
+// 获取选中的销毁效果
+function getSelectedEffect() {
+    const radioButtons = document.getElementsByName('destroyEffect');
+    for (const radioButton of radioButtons) {
+        if (radioButton.checked) {
+            return radioButton.value;
+        }
+    }
+    return 'explosion'; // 默认效果
+}
+
+// 应用销毁效果
+function applyDestroyEffect(messageElement, effect) {
+    switch (effect) {
+        case 'explosion':
+            messageElement.classList.add('exploding');
+            createExplosion();
+            break;
+        case 'dissolve':
+            messageElement.classList.add('dissolving');
+            break;
+        case 'evaporate':
+            messageElement.classList.add('evaporating');
+            break;
     }
 } 
