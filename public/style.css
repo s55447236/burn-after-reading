@@ -28,7 +28,7 @@ h1 {
     font-size: 2.5em;
     color: #000;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     font-weight: 700;
     line-height: 1.4;
 }
@@ -50,8 +50,23 @@ h1 {
 }
 
 .feature {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.feature-icon {
+    width: 20px;
+    height: 20px;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.feature span {
     font-size: 0.9em;
     color: #666;
+    white-space: nowrap;
 }
 
 textarea {
@@ -59,7 +74,7 @@ textarea {
     height: 150px;
     padding: 15px;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     margin-bottom: 20px;
     font-size: 16px;
     resize: vertical;
@@ -75,36 +90,44 @@ button {
     color: white;
     border: none;
     padding: 15px 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 16px;
     cursor: pointer;
     width: 100%;
-    transition: background-color 0.3s;
+    transition: all 0.2s;
 }
 
 button:hover {
     background-color: #333;
 }
 
+.input-section {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 16px;
+}
+
 .effect-options {
     display: flex;
     justify-content: space-between;
-    margin: 20px 0;
+    margin-bottom: 0;
     gap: 10px;
 }
 
 .effect-option {
     flex: 1;
-    padding: 15px;
-    border: 1px solid #eee;
-    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
     background-color: #fff;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
+    font-size: 15px;
 }
 
 .effect-option:hover {
-    background-color: #f5f5f5;
+    background-color: #f8f8f8;
+    border-color: #ccc;
 }
 
 .effect-option input[type="radio"] {
@@ -112,8 +135,8 @@ button:hover {
 }
 
 .effect-option.selected {
+    background-color: #f0f0f0;
     border-color: #000;
-    background-color: #f5f5f5;
 }
 
 #messageDisplay {
@@ -139,7 +162,7 @@ button:hover {
 .link-container {
     background-color: #f5f5f5;
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 12px;
     margin: 20px 0;
 }
 
