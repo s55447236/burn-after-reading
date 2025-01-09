@@ -10,7 +10,8 @@
 <body>
     <div class="container">
         <h1>你的秘密<br>只属于你信任的人</h1>
-        <p class="subtitle">任何私密信息都能安全传递，阅读后即时销毁，无痕保存，让每次分享都安心无忧。</p>
+        <p class="tagline">任何私密信息都能安全传递，阅读后即时销毁，无痕保存，让每次分享都安心无忧。</p>
+        
         
         <div class="features">
             <div class="feature">
@@ -27,12 +28,16 @@
             </div>
         </div>
         
+       
         <!-- 消息输入界面 -->
         <div id="messageInput">
             <textarea id="inputText" placeholder="写下你想说的话，绝对保密哦...."></textarea>
             <button onclick="generateLink()">生成分享链接</button>
             
             <div class="input-section">
+                <!-- 效果演示区域 -->
+                <div id="effectDemo" class="effect-demo"></div>
+                
                 <!-- 销毁效果选择器 -->
                 <div class="effect-options">
                     <div class="effect-option">

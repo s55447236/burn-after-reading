@@ -17,7 +17,7 @@ body {
 
 .container {
     width: 90%;
-    max-width: 600px;
+    max-width: 640px;
     margin: 0 auto;
     padding: 20px;
     text-align: center;
@@ -31,15 +31,6 @@ h1 {
     margin-bottom: 40px;
     font-weight: 700;
     line-height: 1.4;
-}
-
-.subtitle {
-    color: #666;
-    margin-bottom: 30px;
-    font-size: 0.9em;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .features {
@@ -67,6 +58,14 @@ h1 {
     font-size: 0.9em;
     color: #666;
     white-space: nowrap;
+}
+
+.tagline {
+    font-size: 1em;
+    color: #666;
+    margin: 20px auto 40px;
+    text-align: center;
+    line-height: 1.6;
 }
 
 textarea {
@@ -103,8 +102,30 @@ button:hover {
 
 .input-section {
     margin-top: 20px;
-    padding: 10px 0px;
+    padding: 20px;
+    background-color: #fff;
+    border: 2px solid #f0f0f0;
     border-radius: 16px;
+}
+
+.effect-demo {
+    position: relative;
+    height: 100px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.demo-text {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.5em;
+    color: #000;
+    white-space: pre-line;
+    text-align: center;
+    line-height: 1.4;
 }
 
 .effect-options {
@@ -154,7 +175,6 @@ button:hover {
     font-size: 14px;
 }
 
-/* 链接分享界面 */
 #shareLink {
     text-align: center;
 }
@@ -175,7 +195,13 @@ button:hover {
     font-size: 14px;
 }
 
-/* 动画效果 */
+.particle {
+    position: absolute;
+    background: #000;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
 @keyframes explode {
     0% {
         transform: scale(1);
@@ -221,5 +247,4 @@ button:hover {
 
 .evaporating {
     animation: evaporate 1s ease-out forwards;
-} 
 } 
