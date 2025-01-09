@@ -13,14 +13,21 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0;
 }
 
 .container {
     width: 90%;
     max-width: 640px;
-    margin: 0 auto;
-    padding: 20px;
+    padding: 40px 20px;
     text-align: center;
+    position: relative;
+    overflow: visible;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
 }
 
 h1 {
@@ -28,9 +35,10 @@ h1 {
     font-size: 2.5em;
     color: #000;
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     font-weight: 700;
     line-height: 1.4;
+    transition: all 0.3s ease-out;
 }
 
 .features {
@@ -63,7 +71,7 @@ h1 {
 .tagline {
     font-size: 1em;
     color: #666;
-    margin: 20px auto 40px;
+    margin: 10px auto 0px;
     text-align: center;
     line-height: 1.6;
 }
@@ -106,26 +114,6 @@ button:hover {
     background-color: #fff;
     border: 2px solid #f0f0f0;
     border-radius: 16px;
-}
-
-.effect-demo {
-    position: relative;
-    height: 100px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    background-color: #fff;
-}
-
-.demo-text {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.5em;
-    color: #000;
-    white-space: pre-line;
-    text-align: center;
-    line-height: 1.4;
 }
 
 .effect-options {
@@ -197,54 +185,31 @@ button:hover {
 
 .particle {
     position: absolute;
-    background: #000;
     border-radius: 50%;
     pointer-events: none;
+    background-color: currentColor;
+    z-index: 1000;
+    will-change: transform, opacity;
+    transform-origin: center center;
+    opacity: 1;
 }
 
-@keyframes explode {
-    0% {
-        transform: scale(1);
-        opacity: 1;
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
     }
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
+    
+    h1 {
+        font-size: 2em;
     }
-}
-
-@keyframes dissolve {
-    0% {
-        opacity: 1;
-        transform: scale(1);
+    
+    .features {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
     }
-    100% {
-        opacity: 0;
-        transform: scale(0.8);
-        filter: blur(10px);
+    
+    .effect-options {
+        flex-direction: column;
     }
-}
-
-@keyframes evaporate {
-    0% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-50px);
-        filter: blur(5px);
-    }
-}
-
-.exploding {
-    animation: explode 1s ease-out forwards;
-}
-
-.dissolving {
-    animation: dissolve 1s ease-out forwards;
-}
-
-.evaporating {
-    animation: evaporate 1s ease-out forwards;
 } 

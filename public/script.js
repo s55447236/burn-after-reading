@@ -120,48 +120,84 @@ function copyLink() {
 }
 
 // 添加爆炸效果函数
-function createExplosion() {
-    const messageElement = document.getElementById('message');
-    const rect = messageElement.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+function createExplosion(container, targetElement) {
+    const rect = targetElement.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
     
-    // 创建粒子
-    for (let i = 0; i < 30; i++) {
+    // 计算相对于容器的中心点
+    const centerX = rect.left - containerRect.left + rect.width / 2;
+    const centerY = rect.top - containerRect.top + rect.height / 2 - 20; // 稍微往上一点
+    
+    // 创建更多粒子
+    for (let i = 0; i < 150; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         
-        // 随机大小
-        const size = Math.random() * 8 + 4;
+        // 随机大小，但保持较小的粒子
+        const size = Math.random() * 6 + 2;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
         
-        // 初始位置
+        // 随机颜色，使用更鲜艳的颜色
+        const colors = [
+            '#ff0000', // 红色
+            '#ff6b00', // 橙色
+            '#ffd700', // 金色
+            '#ff3366', // 粉红
+            '#ffff00', // 黄色
+            '#ff1493', // 深粉色
+            '#ff4500', // 橙红色
+            '#ffa500'  // 橙色
+        ];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.color = color;
+        
+        // 初始位置（相对于容器）
         particle.style.left = `${centerX}px`;
         particle.style.top = `${centerY}px`;
         
-        document.body.appendChild(particle);
+        container.appendChild(particle);
         
-        // 随机方向和距离
-        const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 200 + 100;
-        const vx = Math.cos(angle) * velocity;
-        const vy = Math.sin(angle) * velocity;
+        // 烟花效果的运动轨迹
+        const angle = (Math.random() * Math.PI * 2);
+        const velocity = Math.random() * 400 + 300; // 调整速度范围
+        const gravity = 300; // 减小重力效果，让粒子飞得更远
         
-        // 动画
-        particle.animate([
-            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-            { transform: `translate(${vx}px, ${vy}px) scale(0)`, opacity: 0 }
+        // 使用更简单但更有效的动画
+        const animation = particle.animate([
+            {
+                transform: 'translate(0, 0) scale(1)',
+                opacity: 1
+            },
+            {
+                transform: `translate(${Math.cos(angle) * velocity * 0.5}px, ${Math.sin(angle) * velocity * 0.5 + gravity * 0.15}px) scale(0.8)`,
+                opacity: 0.8
+            },
+            {
+                transform: `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity + gravity}px) scale(0)`,
+                opacity: 0
+            }
         ], {
-            duration: 1000,
-            easing: 'ease-out'
-        }).onfinish = () => particle.remove();
+            duration: 1200 + Math.random() * 800, // 延长动画时间
+            easing: 'cubic-bezier(0.15, 0.85, 0.45, 0.95)',
+            fill: 'both'
+        });
+        
+        animation.onfinish = () => {
+            particle.remove();
+        };
     }
+    
+    // 立即隐藏目标元素
+    targetElement.style.opacity = '0';
+    targetElement.style.transform = 'scale(0.8)';
 }
 
 // 初始化效果选择器
 document.addEventListener('DOMContentLoaded', function() {
     const effectOptions = document.querySelectorAll('.effect-option');
+    const titleElement = document.querySelector('h1');
+    
     effectOptions.forEach(option => {
         const radio = option.querySelector('input[type="radio"]');
         
@@ -170,40 +206,82 @@ document.addEventListener('DOMContentLoaded', function() {
             option.classList.add('selected');
         }
         
+        // 悬停预览效果
+        option.addEventListener('mouseenter', () => {
+            console.log('鼠标悬停，应用效果:', radio.value);
+            applyEffect(titleElement, radio.value);
+        });
+        
+        // 鼠标离开时恢复原状
+        option.addEventListener('mouseleave', () => {
+            console.log('鼠标离开，恢复原状');
+            titleElement.className = '';
+            titleElement.style.opacity = '1';
+            titleElement.style.transform = 'none';
+            titleElement.style.filter = 'none';
+        });
+        
         // 点击整个选项时选中单选框
         option.addEventListener('click', () => {
-            // 移除其他选项的选中状态
             effectOptions.forEach(opt => opt.classList.remove('selected'));
-            // 选中当前选项
             option.classList.add('selected');
             radio.checked = true;
+            console.log('选择效果:', radio.value);
         });
     });
 });
 
-// 获取选中的销毁效果
-function getSelectedEffect() {
-    const radioButtons = document.getElementsByName('destroyEffect');
-    for (const radioButton of radioButtons) {
-        if (radioButton.checked) {
-            return radioButton.value;
-        }
+// 应用效果
+function applyEffect(element, effect) {
+    console.log('应用效果:', effect, '到元素:', element);
+    element.className = '';
+    
+    switch (effect) {
+        case 'explosion':
+            console.log('创建爆炸效果');
+            const container = document.querySelector('.container');
+            console.log('容器:', container);
+            createExplosion(container, element);
+            break;
+        case 'dissolve':
+            element.style.transition = 'all 0.5s ease-out';
+            element.style.opacity = '0.5';
+            element.style.filter = 'blur(3px)';
+            break;
+        case 'evaporate':
+            element.style.transition = 'all 0.5s ease-out';
+            element.style.transform = 'translateY(-10px)';
+            element.style.opacity = '0.5';
+            element.style.filter = 'blur(2px)';
+            break;
     }
-    return 'explosion'; // 默认效果
+}
+
+// 获取选中的效果
+function getSelectedEffect() {
+    const selectedRadio = document.querySelector('input[name="destroyEffect"]:checked');
+    return selectedRadio ? selectedRadio.value : 'explosion';
 }
 
 // 应用销毁效果
 function applyDestroyEffect(messageElement, effect) {
+    console.log('应用销毁效果:', effect);
     switch (effect) {
         case 'explosion':
-            messageElement.classList.add('exploding');
-            createExplosion();
+            const container = document.querySelector('.container');
+            console.log('销毁容器:', container);
+            createExplosion(container, messageElement);
             break;
         case 'dissolve':
-            messageElement.classList.add('dissolving');
+            messageElement.style.transition = 'all 1s ease-out';
+            messageElement.style.opacity = '0';
+            messageElement.style.filter = 'blur(10px)';
             break;
         case 'evaporate':
-            messageElement.classList.add('evaporating');
+            messageElement.style.transition = 'all 1s ease-out';
+            messageElement.style.transform = 'translateY(-50px)';
+            messageElement.style.opacity = '0';
+            messageElement.style.filter = 'blur(5px)';
             break;
     }
 } 
