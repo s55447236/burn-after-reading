@@ -7,7 +7,14 @@ async function generateLink() {
     }
     
     try {
-        const response = await fetch('/api/messages', {
+        // 使用完整的 API URL
+        const baseUrl = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname === '192.168.1.50'
+            ? 'http://192.168.1.50:3000'
+            : '';
+            
+        const response = await fetch(`${baseUrl}/api/messages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -15,26 +22,38 @@ async function generateLink() {
             body: JSON.stringify({ message })
         });
         
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
-        const link = `${window.location.origin}/view/${data.id}`;
+        const link = `${baseUrl}/view/${data.id}`;
         
         document.getElementById('messageInput').style.display = 'none';
         document.getElementById('shareLink').style.display = 'block';
         document.getElementById('linkText').value = link;
     } catch (error) {
-        alert('生成链接失败，请重试');
+        console.error('生成链接失败:', error);
+        alert('生成链接失败，请确保后端服务正在运行。错误详情：' + error.message);
     }
 }
 
 // 检查URL参数是否包含消息ID
 window.onload = async function() {
     const path = window.location.pathname;
-    const match = path.match(/\/view\/([a-f0-9]+)/);
+    const match = path.match(/\/view\/([a-zA-Z0-9]+)/);
     
     if (match) {
         const id = match[1];
         try {
-            const response = await fetch(`/api/messages?id=${id}`);
+            // 使用完整的 API URL
+            const baseUrl = window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1' ||
+                          window.location.hostname === '192.168.1.50'
+                ? 'http://192.168.1.50:3000'
+                : '';
+                
+            const response = await fetch(`${baseUrl}/api/messages?id=${id}`);
             if (!response.ok) {
                 throw new Error('消息不存在或已被销毁');
             }
@@ -44,33 +63,44 @@ window.onload = async function() {
             // 显示消息
             document.getElementById('messageInput').style.display = 'none';
             document.getElementById('messageDisplay').style.display = 'block';
-            document.getElementById('message').innerText = data.content;
+            const messageElement = document.getElementById('message');
+            messageElement.innerText = data.content;
             
-            let timeLeft = 5;
-            document.getElementById('countdown').innerText = `${timeLeft} 秒后消息将被销毁`;
+            // 根据内容长度计算显示时间（2-5秒）
+            const messageLength = data.content.length;
+            const maxLength = 200; // 最大字符数
+            let timeLeft = Math.max(2, Math.min(5, Math.ceil(messageLength / maxLength * 5)));
             
+            // 显示倒计时
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.style.display = 'block';
+            countdownElement.innerText = `${timeLeft} 秒后消息将被销毁`;
+            
+            // 开始倒计时
             const countdown = setInterval(() => {
                 timeLeft--;
-                document.getElementById('countdown').innerText = `${timeLeft} 秒后消息将被销毁`;
-                
-                if (timeLeft <= 0) {
+                if (timeLeft > 0) {
+                    countdownElement.innerText = `${timeLeft} 秒后消息将被销毁`;
+                } else {
                     clearInterval(countdown);
-                    createExplosion();
-                    const messageElement = document.getElementById('message');
-                    messageElement.classList.add('exploding');
-                    document.getElementById('countdown').style.display = 'none';
                     
+                    // 显示销毁动画
+                    createExplosion();
+                    messageElement.classList.add('exploding');
+                    countdownElement.style.display = 'none';
+                    
+                    // 等待动画完成（1秒）后显示销毁信息
                     setTimeout(() => {
                         messageElement.innerText = '消息已被销毁';
                         messageElement.classList.remove('exploding');
                         
+                        // 显示销毁信息 1 秒后返回输入界面
                         setTimeout(() => {
                             document.getElementById('messageDisplay').style.display = 'none';
                             document.getElementById('messageInput').style.display = 'block';
-                            // 更新URL，移除消息ID
                             history.pushState({}, '', '/');
                         }, 1000);
-                    }, 500);
+                    }, 1000);
                 }
             }, 1000);
         } catch (error) {
