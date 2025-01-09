@@ -133,24 +133,13 @@ function createExplosion(container, targetElement) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         
-        // 随机大小，但保持较小的粒子
-        const size = Math.random() * 6 + 2;
+        // 随机大小，增加粒子尺寸
+        const size = Math.random() * 6 + 4; // 4-12px
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
         
-        // 随机颜色，使用更鲜艳的颜色
-        const colors = [
-            '#ff0000', // 红色
-            '#ff6b00', // 橙色
-            '#ffd700', // 金色
-            '#ff3366', // 粉红
-            '#ffff00', // 黄色
-            '#ff1493', // 深粉色
-            '#ff4500', // 橙红色
-            '#ffa500'  // 橙色
-        ];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        particle.style.color = color;
+        // 使用纯黑色
+        particle.style.color = '#000';
         
         // 初始位置（相对于容器）
         particle.style.left = `${centerX}px`;
@@ -160,8 +149,8 @@ function createExplosion(container, targetElement) {
         
         // 烟花效果的运动轨迹
         const angle = (Math.random() * Math.PI * 2);
-        const velocity = Math.random() * 400 + 300; // 调整速度范围
-        const gravity = 300; // 减小重力效果，让粒子飞得更远
+        const velocity = Math.random() * 400 + 100; // 调整速度范围
+        const gravity = 0; // 减小重力效果，让粒子飞得更远
         
         // 使用更简单但更有效的动画
         const animation = particle.animate([
@@ -249,10 +238,10 @@ function applyEffect(element, effect) {
             element.style.filter = 'blur(3px)';
             break;
         case 'evaporate':
-            element.style.transition = 'all 0.5s ease-out';
-            element.style.transform = 'translateY(-10px)';
-            element.style.opacity = '0.5';
-            element.style.filter = 'blur(2px)';
+            element.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
+            element.style.transform = 'translateY(-150px) rotate(10deg) skew(-15deg, 15deg) scale(0.9)';
+            element.style.opacity = '0';
+            element.style.filter = 'blur(8px)';
             break;
     }
 }
@@ -278,10 +267,10 @@ function applyDestroyEffect(messageElement, effect) {
             messageElement.style.filter = 'blur(10px)';
             break;
         case 'evaporate':
-            messageElement.style.transition = 'all 1s ease-out';
-            messageElement.style.transform = 'translateY(-50px)';
+            messageElement.style.transition = 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            messageElement.style.transform = 'translateY(-300px) rotate(20deg) skew(-20deg, 20deg) scale(0.8)';
             messageElement.style.opacity = '0';
-            messageElement.style.filter = 'blur(5px)';
+            messageElement.style.filter = 'blur(12px)';
             break;
     }
 } 
