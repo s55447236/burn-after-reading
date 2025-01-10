@@ -1,14 +1,22 @@
 {
   "name": "burn-after-reading",
   "version": "1.0.0",
-  "description": "阅后即焚消息分享系统",
+  "description": "阅后即焚消息服务",
   "main": "server.js",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.3.1",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "nanoid": "^3.3.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 } 
