@@ -212,7 +212,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         option.addEventListener('mouseenter', () => {
             if (radio.value) {
-                applyEffect(titleElement, radio.value);
+                if (radio.value === 'explosion') {
+                    createExplosion(document.querySelector('.container'), titleElement, true);
+                } else {
+                    applyEffect(titleElement, radio.value);
+                }
             }
         });
         
@@ -220,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
             titleElement.innerHTML = '阅后即焚';
             titleElement.className = '';
             titleElement.style.cssText = '';
+            titleElement.style.display = 'flex';
         });
         
         option.addEventListener('click', () => {
@@ -231,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 创建爆炸效果的函数
-function createExplosion(container, element) {
+function createExplosion(container, element, isPreview = false) {
     return new Promise((resolve) => {
         const rect = element.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -299,7 +304,9 @@ function createExplosion(container, element) {
             } else {
                 // 清理粒子
                 particles.forEach(particle => particle.element.remove());
-                element.style.display = 'none';
+                if (!isPreview) {
+                    element.style.display = 'none';
+                }
                 resolve();
             }
         };
@@ -367,7 +374,7 @@ window.onload = async function() {
                 const container = document.querySelector('.container');
                 
                 if (effect === 'explosion') {
-                    await createExplosion(container, messageElement);
+                    await createExplosion(container, messageElement, false);
                 } else {
                     await applyEffect(messageElement, effect, true);
                 }
