@@ -28,7 +28,13 @@ async function generateLink() {
             return;
         }
         
+        // 确保总是获取当前选中的效果
         const effect = getSelectedEffect();
+        if (!effect) {
+            showToast('请选择一个消失效果');
+            return;
+        }
+
         const baseUrl = getBaseUrl();
         console.log('准备发送请求:', {
             url: `${baseUrl}/api/messages`,
@@ -189,7 +195,7 @@ function toggleEffectOptions() {
 
 function getSelectedEffect() {
     const selectedRadio = document.querySelector('input[name="destroyEffect"]:checked');
-    return selectedRadio ? selectedRadio.value : 'explosion';
+    return selectedRadio ? selectedRadio.value : null;
 }
 
 // 初始化
@@ -197,12 +203,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const effectOptions = document.querySelectorAll('.effect-option');
     const titleElement = document.querySelector('h1');
     
+    // 默认选中第一个效果
+    if (effectOptions.length > 0) {
+        const firstOption = effectOptions[0];
+        const firstRadio = firstOption.querySelector('input[type="radio"]');
+        firstOption.classList.add('selected');
+        firstRadio.checked = true;
+    }
+    
     effectOptions.forEach(option => {
         const radio = option.querySelector('input[type="radio"]');
-        if (radio.checked) option.classList.add('selected');
         
         option.addEventListener('mouseenter', () => {
-            applyEffect(titleElement, radio.value);
+            if (radio.value) {
+                applyEffect(titleElement, radio.value);
+            }
         });
         
         option.addEventListener('mouseleave', () => {
