@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>你的秘密<br>只属于你信任的人</h1>
+        <h1>阅后即焚</h1>
         <p class="tagline">任何私密信息都能安全传递，阅读后即时销毁，无痕保存，让每次分享都安心无忧。</p>
         
         
@@ -28,7 +28,6 @@
             </div>
         </div>
         
-       
         <!-- 消息输入界面 -->
         <div id="messageInput">
             <textarea id="inputText" placeholder="写下你想说的话，绝对保密哦...."></textarea>
@@ -36,6 +35,12 @@
             
             <div class="input-section">
                 <!-- 销毁效果选择器 -->
+                <div class="effect-preview-header" onclick="toggleEffectOptions()">
+                    <p class="effect-preview-text">效果预览</p>
+                    <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 15.0006L7.75732 10.758L9.17154 9.34375L12 12.1722L14.8284 9.34375L16.2426 10.758L12 15.0006Z"/>
+                    </svg>
+                </div>
                 <div class="effect-options">
                     <div class="effect-option">
                         <input type="radio" name="destroyEffect" value="explosion" checked>

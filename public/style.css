@@ -32,7 +32,7 @@ body {
 
 h1 {
     font-family: 'Noto Serif SC', serif;
-    font-size: 2.5em;
+    font-size: 3em;
     color: #000;
     text-align: center;
     margin-bottom: 20px;
@@ -114,10 +114,11 @@ button:hover {
 
 .input-section {
     margin-top: 20px;
-    padding: 20px;
     background-color: #fff;
-    border: 2px solid #f0f0f0;
     border-radius: 16px;
+    gap: 10px;
+    height: 180px;
+    overflow: hidden;
 }
 
 .effect-options {
@@ -125,6 +126,11 @@ button:hover {
     justify-content: space-between;
     margin-bottom: 0;
     gap: 10px;
+    margin-top: 10px;
+    padding: 0 12px 12px;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    position: relative;
+    z-index: 1;
 }
 
 .effect-option {
@@ -204,7 +210,7 @@ button:hover {
     }
     
     h1 {
-        font-size: 2em;
+        font-size: 3em;
     }
     
     .features {
@@ -216,4 +222,66 @@ button:hover {
     .effect-options {
         flex-direction: column;
     }
+}
+
+.effect-preview-text {
+    font-size: 0.9em;
+    color: #333;
+    margin: 0 0 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.effect-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+    position: relative;
+    z-index: 2;
+    background-color: #fff;
+}
+
+.effect-preview-header:hover {
+    background-color: #f5f5f5;
+}
+
+.arrow-icon {
+    width: 32px;
+    height: 32px;
+    color: #333;
+    transition: transform 0.3s ease;
+}
+
+.effect-preview-header.collapsed .arrow-icon {
+    transform: rotate(-180deg);
+}
+
+.effect-options {
+    max-height: 500px;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.effect-options.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.effect-preview-text {
+    font-size: 0.9em;
+    color: #333;
+    margin: 0;
+    text-align: left;
+    font-weight: bold;
+}
+
+.effect-options.collapsed {
+    transform: translateY(-100%);
+    opacity: 0;
 } 

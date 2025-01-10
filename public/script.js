@@ -182,6 +182,15 @@ function createExplosion(container, targetElement) {
     targetElement.style.transform = 'scale(0.8)';
 }
 
+// 展开/收起效果选项
+function toggleEffectOptions() {
+    const header = document.querySelector('.effect-preview-header');
+    const options = document.querySelector('.effect-options');
+    
+    header.classList.toggle('collapsed');
+    options.classList.toggle('collapsed');
+}
+
 // 初始化效果选择器
 document.addEventListener('DOMContentLoaded', function() {
     const effectOptions = document.querySelectorAll('.effect-option');
@@ -204,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 鼠标离开时恢复原状
         option.addEventListener('mouseleave', () => {
             console.log('鼠标离开，恢复原状');
-            titleElement.innerHTML = '你的秘密<br>只属于你信任的人';
+            titleElement.innerHTML = '阅后即焚';
             titleElement.className = '';
             titleElement.style.cssText = '';
         });
