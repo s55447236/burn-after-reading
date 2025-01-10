@@ -78,7 +78,7 @@ async function generateLink() {
         document.execCommand('copy');
         document.body.removeChild(tempInput);
         
-        showToast('链接已复制到剪贴板');
+        showToast('链接已复制');
         
         // 清空输入框
         document.getElementById('inputText').value = '';
@@ -120,7 +120,7 @@ function applyEffect(element, effect, isDestroy = false) {
                     Object.assign(lineDiv.style, {
                         position: 'relative',
                         lineHeight: '1.15',
-                        fontSize: isDestroy ? '3em' : '1em',
+                        fontSize: isDestroy ? '3rem' : '1em',
                         fontWeight: '700',
                         fontFamily: "'Noto Serif SC', serif",
                         marginBottom: lineIndex < lines.length - 1 ? '10px' : '0',
@@ -344,7 +344,7 @@ window.onload = async function() {
         const messageElement = document.getElementById('message');
         messageElement.textContent = data.content;
         messageElement.style.fontFamily = "'Noto Serif SC', serif";
-        messageElement.style.fontSize = '3em';
+        messageElement.style.fontSize = '3rem';
         messageElement.style.fontWeight = '700';
         messageElement.style.lineHeight = '1.4';
         messageElement.style.color = '#000';
@@ -375,7 +375,7 @@ window.onload = async function() {
                 // 使用 H1 样式显示"消息已销毁"
                 messageElement.style.display = 'none';
                 countdownElement.style.fontFamily = "'Noto Serif SC', serif";
-                countdownElement.style.fontSize = '3em';
+                countdownElement.style.fontSize = '3rem';
                 countdownElement.style.fontWeight = '700';
                 countdownElement.style.lineHeight = '1.4';
                 countdownElement.style.color = '#000';
