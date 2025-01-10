@@ -1,8 +1,25 @@
+// 显示 toast 提示
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // 显示 toast
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // 3秒后移除 toast
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // 生成分享链接
 async function generateLink() {
     const message = document.getElementById('inputText').value;
     if (!message) {
-        alert('请输入消息内容');
+        showToast('请输入消息内容');
         return;
     }
     
@@ -11,7 +28,7 @@ async function generateLink() {
         const baseUrl = window.location.hostname === 'localhost' || 
                        window.location.hostname === '127.0.0.1' ||
                        window.location.hostname === '192.168.1.50'
-            ? 'http://192.168.1.50:3000'
+            ? `http://${window.location.hostname}:3000`
             : '';
             
         const response = await fetch(`${baseUrl}/api/messages`, {
@@ -37,7 +54,7 @@ async function generateLink() {
         document.getElementById('linkText').value = link;
     } catch (error) {
         console.error('生成链接失败:', error);
-        alert('生成链接失败，请确保后端服务正在运行。错误详情：' + error.message);
+        showToast('生成链接失败，请确保后端服务正在运行');
     }
 }
 
@@ -116,7 +133,7 @@ function copyLink() {
     const linkText = document.getElementById('linkText');
     linkText.select();
     document.execCommand('copy');
-    alert('链接已复制到剪贴板');
+    showToast('链接已复制到剪贴板');
 }
 
 // 添加爆炸效果函数
