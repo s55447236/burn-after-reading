@@ -70,120 +70,116 @@ async function generateLink() {
         const link = `${baseUrl}/view/${data.id}`;
         console.log('生成链接成功:', link);
         
-        document.getElementById('messageInput').style.display = 'none';
-        document.getElementById('shareLink').style.display = 'block';
-        document.getElementById('linkText').value = link;
+        // 创建临时输入框来复制链接
+        const tempInput = document.createElement('input');
+        tempInput.value = link;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        showToast('链接已复制到剪贴板');
+        
+        // 清空输入框
+        document.getElementById('inputText').value = '';
+        
     } catch (error) {
         console.error('生成链接时发生错误:', error);
         showToast(error.message || '生成链接失败，请确保后端服务正在运行');
-        // 发生错误时保持输入界面可见
-        document.getElementById('messageInput').style.display = 'block';
-        document.getElementById('shareLink').style.display = 'none';
     }
 }
 
 // 应用特效的统一函数
 function applyEffect(element, effect, isDestroy = false) {
-    element.className = '';
-    
-    switch (effect) {
-        case 'explosion':
-            const container = document.querySelector('.container');
-            createExplosion(container, element);
-            break;
-            
-        case 'dissolve':
-        case 'evaporate':
-            const isEvaporate = effect === 'evaporate';
-            const duration = isEvaporate ? 1.5 : 0.8;
-            const originalHTML = element.innerHTML;
-            const lines = element.innerText.split('\n');
-            element.innerHTML = '';
-            
-            lines.forEach((line, lineIndex) => {
-                const lineDiv = document.createElement('div');
-                Object.assign(lineDiv.style, {
-                    position: 'relative',
-                    lineHeight: '1.15',
-                    fontSize: isDestroy ? '3em' : '1em',
-                    fontWeight: '700',
-                    fontFamily: "'Noto Serif SC', serif",
-                    marginBottom: lineIndex < lines.length - 1 ? '10px' : '0',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center'
-                });
+    return new Promise((resolve) => {
+        element.className = '';
+        
+        switch (effect) {
+            case 'explosion':
+                const container = document.querySelector('.container');
+                createExplosion(container, element).then(resolve);
+                break;
                 
-                line.split('').forEach((char, index) => {
-                    const span = document.createElement('span');
-                    span.innerText = char;
-                    span.style.display = 'inline-block';
-                    span.style.transition = `all ${duration}s cubic-bezier(0.4, 0, 0.2, 1)`;
-                    span.style.transitionDelay = `${index * 0.02}s`;
-                    
-                    requestAnimationFrame(() => {
-                        if (isEvaporate) {
-                            const rotate = -25 + Math.random() * 50;
-                            const skewX = -30 + Math.random() * 80;
-                            const skewY = -30 + Math.random() * 60;
-                            span.style.transform = `translateY(-300px) rotate(${rotate}deg) skew(${skewX}deg, ${skewY}deg)`;
-                        } else {
-                            const fallDirection = Math.random() > 0.5 ? 1 : -1;
-                            const rotation = (Math.random() * 30 + 15) * fallDirection;
-                            const fallDistance = 100 + Math.random() * 100;
-                            span.style.transform = `translateY(${fallDistance}px) rotate(${rotation}deg)`;
-                        }
-                        span.style.opacity = '0';
-                        span.style.filter = `blur(${isEvaporate ? 12 : 5}px)`;
+            case 'dissolve':
+            case 'evaporate':
+                const isEvaporate = effect === 'evaporate';
+                const duration = isEvaporate ? 1.5 : 0.8;
+                const originalHTML = element.innerHTML;
+                const lines = element.innerText.split('\n');
+                element.innerHTML = '';
+                
+                // 创建一个包装器来包含所有的字符
+                const wrapper = document.createElement('div');
+                wrapper.style.position = 'relative';
+                element.appendChild(wrapper);
+                
+                let maxDelay = 0;
+                
+                lines.forEach((line, lineIndex) => {
+                    const lineDiv = document.createElement('div');
+                    Object.assign(lineDiv.style, {
+                        position: 'relative',
+                        lineHeight: '1.15',
+                        fontSize: isDestroy ? '3em' : '1em',
+                        fontWeight: '700',
+                        fontFamily: "'Noto Serif SC', serif",
+                        marginBottom: lineIndex < lines.length - 1 ? '10px' : '0',
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'center'
                     });
                     
-                    lineDiv.appendChild(span);
+                    line.split('').forEach((char, index) => {
+                        const span = document.createElement('span');
+                        span.innerText = char;
+                        span.style.display = 'inline-block';
+                        span.style.transition = `all ${duration}s cubic-bezier(0.4, 0, 0.2, 1)`;
+                        const delay = index * 0.02;
+                        span.style.transitionDelay = `${delay}s`;
+                        maxDelay = Math.max(maxDelay, delay);
+                        
+                        // 确保动画开始前的初始状态
+                        span.style.opacity = '1';
+                        span.style.transform = 'none';
+                        span.style.filter = 'none';
+                        
+                        requestAnimationFrame(() => {
+                            if (isEvaporate) {
+                                const rotate = -25 + Math.random() * 50;
+                                const skewX = -30 + Math.random() * 80;
+                                const skewY = -30 + Math.random() * 60;
+                                span.style.transform = `translateY(-300px) rotate(${rotate}deg) skew(${skewX}deg, ${skewY}deg)`;
+                            } else {
+                                const fallDirection = Math.random() > 0.5 ? 1 : -1;
+                                const rotation = (Math.random() * 30 + 15) * fallDirection;
+                                const fallDistance = 100 + Math.random() * 100;
+                                span.style.transform = `translateY(${fallDistance}px) rotate(${rotation}deg)`;
+                            }
+                            span.style.opacity = '0';
+                            span.style.filter = `blur(${isEvaporate ? 12 : 5}px)`;
+                        });
+                        
+                        lineDiv.appendChild(span);
+                    });
+                    wrapper.appendChild(lineDiv);
                 });
-                element.appendChild(lineDiv);
-            });
-            
-            if (isDestroy) {
+                
+                // 等待所有动画完成
+                const totalDuration = (maxDelay + duration) * 1000;
                 setTimeout(() => {
-                    element.style.display = 'none';
-                }, duration * 1000);
-            } else {
-                setTimeout(() => {
-                    element.innerHTML = originalHTML;
-                    element.style.opacity = '1';
-                    element.style.transform = 'none';
-                    element.style.filter = 'none';
-                }, duration * 1000);
-            }
-            break;
-    }
-}
-
-// 复制链接功能
-function copyLink() {
-    const linkText = document.getElementById('linkText');
-    if (!linkText) {
-        showToast('复制功能出错');
-        return;
-    }
-    
-    try {
-        // 选中文本
-        linkText.select();
-        linkText.setSelectionRange(0, 99999); // 兼容移动设备
-        
-        // 执行复制
-        document.execCommand('copy');
-        
-        // 取消选中
-        window.getSelection().removeAllRanges();
-        
-        showToast('链接已复制到剪贴板');
-    } catch (err) {
-        console.error('复制失败:', err);
-        showToast('复制失败，请手动复制链接');
-        // 选中文本，方便用户手动复制
-        linkText.select();
-    }
+                    if (isDestroy) {
+                        element.style.display = 'none';
+                    } else {
+                        element.innerHTML = originalHTML;
+                        element.style.opacity = '1';
+                        element.style.transform = 'none';
+                        element.style.filter = 'none';
+                    }
+                    resolve();
+                }, totalDuration);
+                break;
+        }
+    });
 }
 
 function toggleEffectOptions() {
@@ -236,77 +232,80 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 创建爆炸效果的函数
 function createExplosion(container, element) {
-    const rect = element.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    // 创建粒子
-    const particles = [];
-    const particleCount = 50;
-    
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
+    return new Promise((resolve) => {
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
         
-        // 随机位置和角度
-        const angle = (Math.random() * 360) * Math.PI / 180;
-        const velocity = 1 + Math.random() * 5;
-        const size = Math.random() * 5 + 2;
+        // 创建粒子
+        const particles = [];
+        const particleCount = 50;
         
-        Object.assign(particle.style, {
-            position: 'fixed',
-            left: centerX + 'px',
-            top: centerY + 'px',
-            width: size + 'px',
-            height: size + 'px',
-            backgroundColor: '#000',
-            borderRadius: '50%',
-            pointerEvents: 'none'
-        });
-        
-        particles.push({
-            element: particle,
-            angle,
-            velocity,
-            opacity: 1,
-            x: centerX,
-            y: centerY
-        });
-        
-        container.appendChild(particle);
-    }
-    
-    // 隐藏原始元素
-    element.style.opacity = '0';
-    
-    // 动画循环
-    let frame = 0;
-    const animate = () => {
-        frame++;
-        let allDone = true;
-        
-        particles.forEach(particle => {
-            if (particle.opacity <= 0) return;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
             
-            allDone = false;
-            particle.x += Math.cos(particle.angle) * particle.velocity;
-            particle.y += Math.sin(particle.angle) * particle.velocity;
-            particle.opacity -= 0.02;
+            // 随机位置和角度
+            const angle = (Math.random() * 360) * Math.PI / 180;
+            const velocity = 1 + Math.random() * 5;
+            const size = Math.random() * 5 + 2;
             
-            particle.element.style.transform = `translate(${particle.x - centerX}px, ${particle.y - centerY}px)`;
-            particle.element.style.opacity = particle.opacity;
-        });
-        
-        if (!allDone && frame < 120) {
-            requestAnimationFrame(animate);
-        } else {
-            // 清理粒子
-            particles.forEach(particle => particle.element.remove());
-            element.style.display = 'none';
+            Object.assign(particle.style, {
+                position: 'fixed',
+                left: centerX + 'px',
+                top: centerY + 'px',
+                width: size + 'px',
+                height: size + 'px',
+                backgroundColor: '#000',
+                borderRadius: '50%',
+                pointerEvents: 'none'
+            });
+            
+            particles.push({
+                element: particle,
+                angle,
+                velocity,
+                opacity: 1,
+                x: centerX,
+                y: centerY
+            });
+            
+            container.appendChild(particle);
         }
-    };
-    
-    requestAnimationFrame(animate);
+        
+        // 隐藏原始元素
+        element.style.opacity = '0';
+        
+        // 动画循环
+        let frame = 0;
+        const animate = () => {
+            frame++;
+            let allDone = true;
+            
+            particles.forEach(particle => {
+                if (particle.opacity <= 0) return;
+                
+                allDone = false;
+                particle.x += Math.cos(particle.angle) * particle.velocity;
+                particle.y += Math.sin(particle.angle) * particle.velocity;
+                particle.opacity -= 0.02;
+                
+                particle.element.style.transform = `translate(${particle.x - centerX}px, ${particle.y - centerY}px)`;
+                particle.element.style.opacity = particle.opacity;
+            });
+            
+            if (!allDone && frame < 120) {
+                requestAnimationFrame(animate);
+            } else {
+                // 清理粒子
+                particles.forEach(particle => particle.element.remove());
+                element.style.display = 'none';
+                resolve();
+            }
+        };
+        
+        requestAnimationFrame(animate);
+    });
 }
 
 // 页面加载处理
@@ -355,7 +354,7 @@ window.onload = async function() {
         const countdownElement = document.getElementById('countdown');
         countdownElement.textContent = `消息将在 ${countdown} 秒后销毁`;
         
-        const timer = setInterval(() => {
+        const timer = setInterval(async () => {
             countdown--;
             if (countdown > 0) {
                 countdownElement.textContent = `消息将在 ${countdown} 秒后销毁`;
@@ -368,39 +367,37 @@ window.onload = async function() {
                 const container = document.querySelector('.container');
                 
                 if (effect === 'explosion') {
-                    createExplosion(container, messageElement);
+                    await createExplosion(container, messageElement);
                 } else {
-                    applyEffect(messageElement, effect, true);
+                    await applyEffect(messageElement, effect, true);
                 }
                 
                 // 使用 H1 样式显示"消息已销毁"
+                messageElement.style.display = 'none';
+                countdownElement.style.fontFamily = "'Noto Serif SC', serif";
+                countdownElement.style.fontSize = '3em';
+                countdownElement.style.fontWeight = '700';
+                countdownElement.style.lineHeight = '1.4';
+                countdownElement.style.color = '#000';
+                countdownElement.style.textAlign = 'center';
+                countdownElement.style.margin = '20px 0';
+                countdownElement.textContent = '消息已销毁';
+                
+                // 等待一段时间后显示主页面
                 setTimeout(() => {
-                    messageElement.style.display = 'none';
-                    countdownElement.style.fontFamily = "'Noto Serif SC', serif";
-                    countdownElement.style.fontSize = '3em';
-                    countdownElement.style.fontWeight = '700';
-                    countdownElement.style.lineHeight = '1.4';
-                    countdownElement.style.color = '#000';
-                    countdownElement.style.textAlign = 'center';
-                    countdownElement.style.margin = '20px 0';
-                    countdownElement.textContent = '消息已销毁';
+                    // 显示所有主页元素
+                    h1.style.display = 'flex';
+                    tagline.style.display = 'block';
+                    features.style.display = 'flex';
+                    document.getElementById('messageInput').style.display = 'block';
+                    document.getElementById('messageDisplay').style.display = 'none';
                     
-                    // 300ms后显示主页面
-                    setTimeout(() => {
-                        // 显示所有主页元素
-                        h1.style.display = 'flex';
-                        tagline.style.display = 'block';
-                        features.style.display = 'flex';
-                        document.getElementById('messageInput').style.display = 'block';
-                        document.getElementById('messageDisplay').style.display = 'none';
-                        
-                        // 清空输入框
-                        document.getElementById('inputText').value = '';
-                        
-                        // 更新 URL，移除消息 ID
-                        window.history.pushState({}, '', baseUrl);
-                    }, 300);
-                }, 800); // 等待溶解效果完成
+                    // 清空输入框
+                    document.getElementById('inputText').value = '';
+                    
+                    // 更新 URL，移除消息 ID
+                    window.history.pushState({}, '', baseUrl);
+                }, 800);
             }
         }, 1000);
         
